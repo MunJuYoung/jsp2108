@@ -10,13 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/password")
-public class Password extends HttpServlet{
+public class Password extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/study/password/pass.jsp");
+		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/study/password/pass.jsp");
 		dispatcher.forward(request, response);
-		
 	}
-	
-	
 }

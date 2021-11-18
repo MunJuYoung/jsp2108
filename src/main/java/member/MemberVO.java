@@ -17,14 +17,14 @@ public class MemberVO {
 	private String hobby;
 	private String photo;
 	private String content;
-	private String userInfor; 
+	private String userInfor;
 	private String userDel;
 	private int point;
 	private int level;
 	private int visitCnt;
 	private String startDate;
 	private String lastDate;
-	
+	private int todayCnt;
 	
 	public int getIdx() {
 		return idx;
@@ -164,15 +164,19 @@ public class MemberVO {
 	public void setLastDate(String lastDate) {
 		this.lastDate = lastDate;
 	}
+	public int getTodayCnt() {
+		return todayCnt;
+	}
+	public void setTodayCnt(int todayCnt) {
+		this.todayCnt = todayCnt;
+	}
 	@Override
 	public String toString() {
 		return "MemberVO [idx=" + idx + ", mid=" + mid + ", pwd=" + pwd + ", pwdKey=" + pwdKey + ", nickName=" + nickName
 				+ ", name=" + name + ", gender=" + gender + ", birthday=" + birthday + ", tel=" + tel + ", address=" + address
 				+ ", email=" + email + ", homePage=" + homePage + ", job=" + job + ", hobby=" + hobby + ", photo=" + photo
 				+ ", content=" + content + ", userInfor=" + userInfor + ", userDel=" + userDel + ", point=" + point + ", level="
-				+ level + ", visitCnt=" + visitCnt + ", startDate=" + startDate + ", lastDate=" + lastDate + "]";
+				+ level + ", visitCnt=" + visitCnt + ", startDate=" + startDate + ", lastDate=" + lastDate + ", todayCnt="
+				+ todayCnt + "]";
 	}
-	
-	
-	
 }

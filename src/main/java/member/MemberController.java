@@ -10,38 +10,70 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("*.mem")
-public class MemberController extends HttpServlet{
+public class MemberController extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		MemberInterface command = null;
-		String viewPage = "/WEB-INF/member"; // 계속 중복되니까 밖에다놓기
+		String viewPage = "/WEB-INF/member";
 		
 		String uri = request.getRequestURI();
 		String com = uri.substring(uri.lastIndexOf("/"), uri.lastIndexOf("."));
 		
 		if(com.equals("/memLogin")) {
+			command = new MemLoginCommand();  // 로그인시 저장된 아이디가 있는지를 쿠키로 처리하기위해 커맨드객체생성처리
+			command.execute(request, response);
 			viewPage += "/memLogin.jsp";
+		}
+		else if(com.equals("/memLoginOk")) {
+			command = new MemLoginOkCommand();
+			command.execute(request, response);
+			viewPage = "/WEB-INF/message/message.jsp";
+		}
+		else if(com.equals("/memLogOut")) {
+			command = new MemLogOutCommand();
+			command.execute(request, response);
+			viewPage = "/WEB-INF/message/message.jsp";
 		}
 		else if(com.equals("/memJoin")) {
 			viewPage += "/memJoin.jsp";
 		}
+		else if(com.equals("/memJoinOk")) {
+			command = new MemJoinOkCommand();
+			command.execute(request, response);
+			viewPage = "/WEB-INF/message/message.jsp";
+		}
 		else if(com.equals("/idCheck")) {
 			command = new IdCheckCommand();
-			command.execute(request, response); //res,mid를 싣고 간다
+			command.execute(request, response);
 			viewPage += "/idCheck.jsp";
 		}
 		else if(com.equals("/nickCheck")) {
 			command = new NickCheckCommand();
-			command.execute(request, response); //res,nickName를 싣고 간다
+			command.execute(request, response);
 			viewPage += "/nickCheck.jsp";
 		}
-		else if(com.equals("/memJoinOk")) {
-			command = new MemJoinOkCommand();
-			command.execute(request, response); //가입정보를 DB에 옮긴다
+		else if(com.equals("/memMain")) {
+			command = new MemMainCommand();
+			command.execute(request, response);
+			viewPage += "/memMain.jsp";
+		}
+		else if(com.equals("/memUpdate")) {
+//			command = new MemUpdateCommand();
+//			command.execute(request, response);
+			viewPage += "/memUpdate.jsp";
+		}
+		else if(com.equals("/memUpdateOk")) {
+			command = new MemUpdateOkCommand();
+			command.execute(request, response);
+			viewPage = "/WEB-INF/message/message.jsp";
+		}
+		else if(com.equals("/memDelete")) {
+			command = new MemDeleteCommand();
+			command.execute(request, response);
 			viewPage = "/WEB-INF/message/message.jsp";
 		}
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
-		dispatcher.forward(request, response);  //현재 상황 유지해서 가져간다
+		dispatcher.forward(request, response);
 	}
-} 
+}

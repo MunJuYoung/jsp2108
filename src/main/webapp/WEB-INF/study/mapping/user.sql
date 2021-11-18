@@ -1,5 +1,4 @@
 show tables;
-SELECT * FROM user;
 
 create table user (
   idx  int not null auto_increment primary key,
@@ -7,7 +6,7 @@ create table user (
   age  int default 20
 );
 
-drop table user; 
+/* drop table user; */
 
 insert into user values (default, '관리자', 45);
 insert into user values (default, '홍길동', 25);

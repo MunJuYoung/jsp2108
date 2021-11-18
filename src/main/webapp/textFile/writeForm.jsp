@@ -12,12 +12,13 @@
 <div class="container">
   <h2>문서 글쓰기</h2>
   <form name="myform" method="post" action="writeFormOk.jsp">
-  	제목 : <input type="text" name="title" class="form-control" autofocus><br>
-  	내용 : <textarea rows="5" name="content" class="form-control" autofocus></textarea><br>
-  	<p>
-  		<input type="submit" value="저장하기" class="btn btn-secondary" >
-  	</p>
+    제목 : <input type="text" name="title" class="form-control" autofocus /><br/>
+    내용 : <textarea rows="5" name="content" class="form-control"></textarea><br/>
+    <p>
+      <input type="submit" value="저장하기" class="btn btn-secondary"/>
+    </p>
   </form>
 </div>
+<br>
 </body>
 </html>
