@@ -1,4 +1,4 @@
-package member;
+package board;
 
 import java.io.IOException;
 
@@ -7,18 +7,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class MemLogOutCommand implements MemberInterface {
+import member.MemberDAO;
+import member.MemberVO;
+
+public class BoInputCommand implements BoardInterface {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		String nickName = (String) session.getAttribute("sNickName");
+		String mid = session.getAttribute("sMid") == null ? "" : (String) session.getAttribute("sMid");
 		
-		session.invalidate(); // 세션정보들 초기화
+		MemberDAO dao = new MemberDAO();
+		MemberVO vo = dao.getUserInfor(mid);
 		
-		request.setAttribute("msg", "memberLogOutOk");
-		request.setAttribute("url", request.getContextPath()+"/memLogin.mem");
-		request.setAttribute("val",nickName);
+		request.setAttribute("email", vo.getEmail());
+		request.setAttribute("homePage", vo.getHomePage());
 	}
 
 }

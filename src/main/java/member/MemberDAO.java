@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import conn.GetConn;
 
@@ -168,12 +169,16 @@ public class MemberDAO {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, mid);
 			rs = pstmt.executeQuery();
-			rs.next();
+			if(rs.next()) {
+				vo.setVisitCnt(rs.getInt("visitCnt"));
+				vo.setTodayCnt(rs.getInt("todayCnt"));
+				vo.setPoint(rs.getInt("point"));
+				vo.setName(rs.getString("name"));
+				
+				vo.setEmail(rs.getString("email"));
+				vo.setHomePage(rs.getString("homePage"));
+			}
 			
-			vo.setVisitCnt(rs.getInt("visitCnt"));
-			vo.setTodayCnt(rs.getInt("todayCnt"));
-			vo.setPoint(rs.getInt("point"));
-			vo.setName(rs.getString("name"));
 		} catch (SQLException e) {
 			System.out.println("SQL 오류 : " + e.getMessage());
 		} finally {
@@ -228,5 +233,181 @@ public class MemberDAO {
 			getConn.pstmtClose();
 		}
 	}
+	
+	// 신규회원(준회원)의 갯수 가져오기
+		public int getNewMember() {
+			int newMember = 0;
+			try {
+				sql = "select count(*) from member where level = 1";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				rs.next();
+				newMember = rs.getInt(1);
+			} catch (SQLException e) {
+				System.out.println("SQL 오류 : " + e.getMessage());
+			} finally {
+				getConn.rsClose();
+			}
+
+			return newMember;
+		}
+
+		// 회원 전체 리스트 가저오기
+		public ArrayList<MemberVO> getMemberList(int startIndexNo, int pageSize, int level, String mid) {
+			ArrayList<MemberVO> vos = new ArrayList<MemberVO>();
+			try {
+				if(mid.equals("") && level == 99) {
+					
+					sql = "select * from member order by idx desc limit ?, ? ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, startIndexNo);
+					pstmt.setInt(2, pageSize);
+				}
+				else if(level != 99){
+					sql = "select * from member WHERE level = ? order by idx desc limit ?, ? ";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, level);
+					pstmt.setInt(2, startIndexNo);
+					pstmt.setInt(3, pageSize);
+				}
+				else {
+					sql = "SELECT * FROM member WHERE mid like ? ORDER BY idx DESC limit ?, ?";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, "%"+mid+"%");
+					pstmt.setInt(2, startIndexNo);
+					pstmt.setInt(3, pageSize);
+				}
+				
+				rs = pstmt.executeQuery();
+				while(rs.next()) {
+					vo = new MemberVO();
+					vo.setIdx(rs.getInt("idx"));
+					vo.setMid(rs.getString("mid"));
+					vo.setPwd(rs.getString("pwd"));
+					vo.setPwdKey(rs.getInt("pwdKey"));
+					vo.setNickName(rs.getString("nickName"));
+					vo.setName(rs.getString("name"));
+					vo.setGender(rs.getString("gender"));
+					vo.setBirthday(rs.getString("birthday"));
+					vo.setTel(rs.getString("tel"));
+					vo.setAddress(rs.getString("address"));
+					vo.setEmail(rs.getString("email"));
+					vo.setHomePage(rs.getString("homePage"));
+					vo.setJob(rs.getString("job"));
+					vo.setHobby(rs.getString("hobby"));
+					vo.setPhoto(rs.getString("photo"));
+					vo.setContent(rs.getString("content"));
+					vo.setUserInfor(rs.getString("userInfor"));
+					vo.setUserDel(rs.getString("userDel"));
+					vo.setPoint(rs.getInt("point"));
+					vo.setLevel(rs.getInt("level"));
+					vo.setVisitCnt(rs.getInt("visitCnt"));
+					vo.setLastDate(rs.getString("lastDate"));
+					vo.setStartDate(rs.getString("startDate"));
+					vo.setTodayCnt(rs.getInt("todayCnt"));
+					
+					vos.add(vo);
+				}
+			} catch (SQLException e) {
+				System.out.println("SQL 오류 : " + e.getMessage());
+			} finally {
+				getConn.rsClose();
+			}
+			return vos;
+		}
+		
+		
+		// 개별 정보 상세보기 처리
+		public MemberVO getMemberInfor(int idx) {
+			vo = new MemberVO();
+			
+			try {
+				sql = "SELECT * FROM member WHERE idx = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, idx);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					vo.setIdx(rs.getInt("idx"));
+					vo.setMid(rs.getString("mid"));
+					vo.setPwd(rs.getString("pwd"));
+					vo.setPwdKey(rs.getInt("pwdKey"));
+					vo.setNickName(rs.getString("nickName"));
+					vo.setName(rs.getString("name"));
+					vo.setGender(rs.getString("gender"));
+					vo.setBirthday(rs.getString("birthday"));
+					vo.setTel(rs.getString("tel"));
+					vo.setAddress(rs.getString("address"));
+					vo.setEmail(rs.getString("email"));
+					vo.setHomePage(rs.getString("homePage"));
+					vo.setJob(rs.getString("job"));
+					vo.setHobby(rs.getString("hobby"));
+					vo.setPhoto(rs.getString("photo"));
+					vo.setContent(rs.getString("content"));
+					vo.setUserInfor(rs.getString("userInfor"));
+					vo.setUserDel(rs.getString("userDel"));
+					vo.setPoint(rs.getInt("point"));
+					vo.setLevel(rs.getInt("level"));
+					vo.setVisitCnt(rs.getInt("visitCnt"));
+					vo.setLastDate(rs.getString("lastDate"));
+					vo.setStartDate(rs.getString("startDate"));
+					vo.setTodayCnt(rs.getInt("todayCnt"));
+				}
+				
+			} catch (SQLException e) {
+				System.out.println("SQL 오류 : " + e.getMessage());
+			} finally {
+				getConn.rsClose();
+			}
+			
+			return vo;
+		}
+		
+		// 페이징처리를 위해 총 회원 수 구하기
+		public int totRecCnt(int level, String mid) {
+			int totRecCnt = 0;
+			try {
+				if(level == 99 && mid.equals("")) {
+					sql = "SELECT count(*) FROM member";
+					pstmt = conn.prepareStatement(sql);
+				}
+				else if(level != 99) {
+					sql = "SELECT count(*) FROM member WHERE level= ?";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setInt(1, level);
+				}
+				else {
+					sql = "SELECT count(*) FROM member WHERE mid like ?";
+					pstmt = conn.prepareStatement(sql);
+					pstmt.setString(1, "%"+mid+"%");
+				}
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					totRecCnt = rs.getInt(1);
+				}
+			} catch (SQLException e) {
+				System.out.println("SQL 오류 : " + e.getMessage());
+			} finally {
+				getConn.rsClose();
+			}
+			
+			return totRecCnt;
+		}
+		
+		// 회원을 member테이블에서 삭제처리
+		public void setMemberReset(int idx) {
+			try {
+				sql = "DELETE FROM member WHERE idx = ?";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, idx);
+				pstmt.executeUpdate();
+				
+			} catch (SQLException e) {
+				System.out.println("SQL 오류 : " + e.getMessage());
+			} finally {
+				getConn.pstmtClose();
+			}
+		}
 			
 }

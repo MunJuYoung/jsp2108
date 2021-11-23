@@ -140,6 +140,29 @@ public class UserDAO {
 		}
 		return vo;
 	}
+	
+	//이름으로 찾기
+	public UserVO getSearchName(String name) {
+		vo = new UserVO();
+		try {
+			sql = "SELECT * FROM user WHERE name = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, name);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				vo.setIdx(rs.getInt("idx"));
+				vo.setName(rs.getString("name"));
+				vo.setAge(rs.getInt("age"));
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("SQL 에러 : " + e.getMessage());
+		} finally {
+			rsClose();
+		}
+		return vo;
+	}
 
 	// 정보 수정하기
 	public int setUserUpdateOk(UserVO vo) {
