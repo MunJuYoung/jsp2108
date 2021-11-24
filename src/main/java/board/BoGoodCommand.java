@@ -16,6 +16,10 @@ public class BoGoodCommand implements BoardInterface {
 		int pag = request.getParameter("pag") == null ? 1 : Integer.parseInt(request.getParameter("pag"));
 		int pageSize = request.getParameter("pageSize") == null ? 5 : Integer.parseInt(request.getParameter("pageSize"));
 		
+		 // 검색폼에서 값이 넘어올경우...
+		String sw = request.getParameter("sw")==null ? "" : request.getParameter("sw");
+		request.setAttribute("sw", sw);
+		
 		BoardDAO dao = new BoardDAO();
 		
 		// 좋아요 증가처리(중복방지)
@@ -35,7 +39,7 @@ public class BoGoodCommand implements BoardInterface {
 			goodIdx.add(imsiGoodIdx);
 		}
 		
-		BoardVO vo = dao.getboardContent(idx);
+		BoardVO vo = dao.getBoardContent(idx);
 		
 		request.setAttribute("vo", vo);
 		request.setAttribute("pag", pag);
